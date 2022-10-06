@@ -51,5 +51,5 @@ private:
     std::array<uint8_t, 0x800> _ram;
     std::shared_ptr<Cartridge> _cartridge;
     Cpu _cpu;
-    //Ppu _ppu;
+    Ppu _ppu;
 };

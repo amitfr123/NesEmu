@@ -3,7 +3,8 @@
 #include "HardwareEmulation/Bus.hpp"
 
 Bus::Bus() : 
-    _cpu(std::bind(&Bus::busWrite, this, std::placeholders::_1, std::placeholders::_2), std::bind(&Bus::busRead, this, std::placeholders::_1))
+    _cpu(std::bind(&Bus::busWrite, this, std::placeholders::_1, std::placeholders::_2), std::bind(&Bus::busRead, this, std::placeholders::_1)),
+    _ppu(std::bind(&Bus::busWrite, this, std::placeholders::_1, std::placeholders::_2), std::bind(&Bus::busRead, this, std::placeholders::_1))
 {
     std::fill(std::begin(_ram), std::end(_ram), 0);
     _memoryMapper.emplace_front(phis_translation({0, RAM_MEMORY_RANGE, std::bind(&Bus::ramWrite, this, std::placeholders::_1, std::placeholders::_2), std::bind(&Bus::ramRead, this, std::placeholders::_1)}));
