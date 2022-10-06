@@ -11,6 +11,6 @@ static void func(std::string file_path)
 int main()
 {
     Nes nes;
-    nes.StartNesEmultion();
+    nes.StartNesEmulation();
     return 0;
 }

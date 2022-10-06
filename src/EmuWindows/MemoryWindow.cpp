@@ -9,7 +9,7 @@
 
 MemoryWindow::MemoryWindow(GetRamFunction get_ram_function) :
     BaseWindow("Memory_View_Window", WINDOW_RECT, 0, COLOR_RED),
-    _output_text_helper(std::string(FONT_PATH) + "PressStart2P.ttf", FONT_SIZE, COLOR_WHITE),
+    _output_text_helper(std::string(RESOURCE_PATH) + "/fonts/PressStart2P.ttf", FONT_SIZE, COLOR_WHITE),
     _scroll_helper(_event_mapper, std::bind(&MemoryWindow::MoveYIndex, this, std::placeholders::_1)),
     _get_ram_function(std::move(get_ram_function))
 {

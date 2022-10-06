@@ -9,15 +9,14 @@
 #include <unistd.h>
 
 Nes::Nes() :
-    _mmu(),
-    _cpu(std::bind(&Mmu::MmuWrite, &_mmu, std::placeholders::_1, std::placeholders::_2), std::bind(&Mmu::MmuRead, &_mmu, std::placeholders::_1))
+    _bus()
 {
     _wm.AddNewWindow(std::make_shared<FileLoadingWindow>(std::bind(&Nes::InsertNewCartridge, this ,std::placeholders::_1)));
-    _wm.AddNewWindow(std::make_shared<MemoryWindow>(std::bind(&Mmu::GetRam, &_mmu)));
+    _wm.AddNewWindow(std::make_shared<MemoryWindow>(std::bind(&Bus::GetRam, &_bus)));
     _run_master_clock = false;
 }
 
-void Nes::StartNesEmultion()
+void Nes::StartNesEmulation()
 {
     bool run_flag = true;
     _wm_thread = std::thread([&]()
@@ -28,14 +27,14 @@ void Nes::StartNesEmultion()
     _wm_thread.detach();
 
     #ifdef NESTEST_DEBUG
-    Nes::InsertNewCartridge(NESTEST_ROM_PATH);
+    Nes::InsertNewCartridge(std::string(RESOURCE_PATH) + "/nestest_rom/nestest.nes");
     #endif // NESTEST_DEBUG
 
     while (run_flag)
     {
         if (_run_master_clock)
         {
-            _cpu.CpuExecuteInstruction();
+            _bus._cpu.cpuExecuteInstruction();
         }
     }
 }
@@ -45,16 +44,11 @@ void Nes::InsertNewCartridge(std::string file_path)
     std::fstream file(file_path, std::fstream::in | std::fstream::out | std::fstream::binary);
     // stop cpu
     // window stop
-    if (_cartridge.get() != nullptr)
-    {
-        _mmu.RemoveCartridge();
-
-        _cartridge.reset();
-    }
-    _cartridge = std::make_shared<Cartridge>(std::move(file));
-    _mmu.InsertCartridge(_cartridge);
-    auto diss = _cpu.Disassemble();
-    // replace with dissasmbly window
+    _bus.removeCartridge();
+    _bus.insertCartridge(std::move(file));
+    
+    auto diss = _bus._cpu.disassemble();
+    // replace w_bus.ith dissasmbly window
     std::ofstream fs(DISSASMBLY_LOG_PATH);
     for (auto line = diss.begin(); line != diss.end(); ++line)
     {  
@@ -62,7 +56,7 @@ void Nes::InsertNewCartridge(std::string file_path)
         fs << line->second << std::endl;
     }
     fs.close();
-    _cpu.CpuReset();
+    _bus._cpu.cpuReset();
     _run_master_clock = true;
     // reset cpu
     // cpu dissasmble

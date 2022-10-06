@@ -3,20 +3,19 @@
 #include <thread>
 
 #include "Cpu.hpp"
-#include "Mmu.hpp"
+#include "Bus.hpp"
+#include "Ppu.hpp"
 #include "EmuWindows/WindowManager.hpp"
 
 class Nes
 {
 public:
 	Nes();
-	void StartNesEmultion();
+	void StartNesEmulation();
 	~Nes() = default;
 private:
 	void InsertNewCartridge(std::string file_path);
-	std::shared_ptr<Cartridge> _cartridge;
-	Cpu _cpu;
-	Mmu _mmu;
+	Bus _bus;
     WindowManager _wm;
 	std::thread _wm_thread;
 	bool _run_master_clock;

@@ -2,8 +2,6 @@
 
 #include <string>
 
-#include "HardwareEmulation/Mmu.hpp"
-
 #include "BaseWindow.hpp"
 
 #include "WindowUtilities/MouseWheelScrollHelper.hpp"

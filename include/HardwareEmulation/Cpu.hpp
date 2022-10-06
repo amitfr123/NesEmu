@@ -11,13 +11,13 @@ public:
     using WriteFunction = std::function<void (const uint16_t address, const uint8_t data)>;
     using ReadFunction = std::function<uint8_t (const uint16_t address)>;
 
-    Cpu(WriteFunction mmu_write, ReadFunction mmu_read);
+    Cpu(WriteFunction bus_write, ReadFunction bus_read);
 
-    void CpuReset();
+    void cpuReset();
 
-    void CpuExecuteInstruction();
+    void cpuExecuteInstruction();
 
-    std::map<uint16_t, std::string> Disassemble();
+    std::map<uint16_t, std::string> disassemble();
 private:
     #ifdef NESTEST_DEBUG
     friend class NestestLogTester;
@@ -153,15 +153,15 @@ private:
     uint8_t _y; //index
     uint8_t _p; //flags
     size_t _cycles;
-    WriteFunction _mmu_write;
-    ReadFunction _mmu_read;
-    std::unordered_map<AMode, AddressFunction> _address_mode_mapper;
-    std::unordered_map<IType, InstructionFunction> _instruction_type_mapper;
-    std::unordered_map<IrqType, std::pair<uint16_t, uint16_t>> _irq_vector_map;
-    std::vector<Instruction> _opcode_vector;
+    WriteFunction _busWrite;
+    ReadFunction _busRead;
+    std::unordered_map<AMode, AddressFunction> _addressModeMapper;
+    std::unordered_map<IType, InstructionFunction> _instructionTypeMapper;
+    std::unordered_map<IrqType, std::pair<uint16_t, uint16_t>> _irqVectorMap;
+    std::vector<Instruction> _opcodeVector;
     bool _loop_running;
 
-    std::vector<std::string> _amode_name_mapper = 
+    std::vector<std::string> _aModeNameMapper = 
     {
         "ACCUM",
         "IMM",
@@ -178,7 +178,7 @@ private:
         "INDIRECT"
     };
 
-    std::vector<std::string> _itype_name_mapper = 
+    std::vector<std::string> _iTypeNameMapper = 
     {
         "ADC",
         "AND",
@@ -239,43 +239,43 @@ private:
         "MIA" 
     };
 
-    void SetFlag(uint8_t flagMask, bool val);
+    void setFlag(uint8_t flagMask, bool val);
 
-    void ClearFlag(uint8_t flagMask);
+    void clearFlag(uint8_t flagMask);
 
-    uint8_t GetFlag(uint8_t flagMask);
+    uint8_t getFlag(uint8_t flagMask);
 
-    void CpuWrite(const uint16_t address, const uint8_t data);
+    void cpuWrite(const uint16_t address, const uint8_t data);
 
-    uint8_t CpuRead(const uint16_t address);
+    uint8_t cpuRead(const uint16_t address);
 
     // This are the diffrent addresing modes:
 
-    uint16_t accum_addr();
+    uint16_t accumAddr();
 
-    uint16_t imm_addr();
+    uint16_t immAddr();
 
-    uint16_t absolute_addr();
+    uint16_t absoluteAddr();
 
-    uint16_t zp_addr();
+    uint16_t zpAddr();
 
-    uint16_t i_zp_x_addr();
+    uint16_t iZpXAddr();
 
-    uint16_t i_zp_y_addr();
+    uint16_t iZpYAddr();
  
-    uint16_t i_absolute_addr_x();
+    uint16_t iAbsoluteAddrX();
 
-    uint16_t i_absolute_addr_y();
+    uint16_t iAbsoluteAddrY();
 
-    uint16_t implied_addr();
+    uint16_t impliedAddr();
 
-    uint16_t relative_addr();
+    uint16_t relativeAddr();
 
-    uint16_t i_indirect_addr();
+    uint16_t iIndirectAddr();
 
-    uint16_t indirect_i_addr();
+    uint16_t indirectIAddr();
 
-    uint16_t indirect_addr(); 
+    uint16_t indirectAddr(); 
 
     // Instruction set
     void Adc(const AMode addrMode);

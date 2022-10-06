@@ -9,7 +9,7 @@ FileLoadingWindow::FileLoadingWindow(TransferFile transfer_function) :
     BaseWindow("File_Load_Window", WINDOW_RECT, 0, COLOR_RED),
     _transfer_function(std::move(transfer_function)),
     _input_text_line_helper(_event_mapper, std::bind(&FileLoadingWindow::LineChecker, this, std::placeholders::_1)),
-    _output_text_helper(std::string(FONT_PATH) + "PressStart2P.ttf", FONT_SIZE, COLOR_WHITE)
+    _output_text_helper(std::string(RESOURCE_PATH) + "/fonts/PressStart2P.ttf", FONT_SIZE, COLOR_WHITE)
 {
 }
 
@@ -32,7 +32,7 @@ void FileLoadingWindow::RenderWindow()
 void FileLoadingWindow::LineChecker(const std::string& str)
 {
     bool flag = false;
-    if (std::filesystem::exists(str))
+    if (std::filesystem::exists(str) && str.ends_with(".nes"))
     {
         _transfer_function(str);
         flag = true;

@@ -58,7 +58,7 @@ private:
     {
         uint32_t index = 0;
         std::string line;
-        std::ifstream log(NESTEST_ROM_LOG_PATH);
+        std::ifstream log(std::string(RESOURCE_PATH) + "/nestest_rom/nestest.log");
         while (std::getline(log,line))
         {
             _cmp_vector.insert(_cmp_vector.end(),std::string(line)); 
