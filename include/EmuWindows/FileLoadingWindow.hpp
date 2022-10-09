@@ -13,15 +13,14 @@ public:
     using TransferFile = std::function<void (std::string file_path)>;
     FileLoadingWindow(TransferFile transfer_function);
 
-    void RenderWindow() override;
-    ~FileLoadingWindow() = default;
+    void renderWindow() override;
 private:
     void LineChecker(const std::string&);
 
     static constexpr uint32_t FONT_SIZE = 20;
     static constexpr SDL_Rect WINDOW_RECT = {0, 0, 500, 24};
 
-    InputTextLineHelper _input_text_line_helper;
-    OutputTextHelper _output_text_helper;
-    TransferFile _transfer_function;
+    InputTextLineHelper _inputTextLineHelper;
+    OutputTextHelper _outputTextHelper;
+    TransferFile _transferFunction;
 };

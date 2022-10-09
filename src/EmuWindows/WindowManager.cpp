@@ -16,7 +16,7 @@ void WindowManager::AddNewWindow(std::shared_ptr<BaseWindow> window)
 {
     if (window.get() != nullptr)
     {
-        _window_mapper.insert(std::make_pair(window->GetWindowId(), window));
+        _windowMapper.insert(std::make_pair(window->getWindowId(), window));
     }
 }
 
@@ -34,27 +34,27 @@ void WindowManager::EmuWindowManagerEventLoop()
         switch (e.type)
         {
         case SDL_KEYDOWN:
-            EventMapperHelpr(e.key.windowID, e);
+            EventMapperHelper(e.key.windowID, e);
             break;
         case SDL_TEXTINPUT:
-            EventMapperHelpr(e.text.windowID, e);
+            EventMapperHelper(e.text.windowID, e);
             break;
         case SDL_MOUSEWHEEL:
-            EventMapperHelpr(e.wheel.windowID, e);
+            EventMapperHelper(e.wheel.windowID, e);
             break;
         case SDL_WINDOWEVENT:
-            EventMapperHelpr(e.window.windowID, e);
+            EventMapperHelper(e.window.windowID, e);
             break;
         default:
             break;
         }
         if (e.type != SDL_QUIT) // SDL_QUIT should kill the program or something like that
         {
-            for(auto iter = _window_mapper.begin(); iter != _window_mapper.end(); ++iter)
+            for(auto iter = _windowMapper.begin(); iter != _windowMapper.end(); ++iter)
             {
-                if (!iter->second->IsWindowClosed())
+                if (!iter->second->isWindowClosed())
                 {
-                    iter->second->RenderWindow();
+                    iter->second->renderWindow();
                 }
             }
         }
@@ -66,12 +66,12 @@ void WindowManager::EmuWindowManagerEventLoop()
     SDL_StopTextInput();
 }
 
-void WindowManager::EventMapperHelpr(uint32_t win_id, const SDL_Event& e)
+void WindowManager::EventMapperHelper(uint32_t win_id, const SDL_Event& e)
 {
-    auto iter = _window_mapper.find(win_id);
-    if (iter == _window_mapper.end())
+    auto iter = _windowMapper.find(win_id);
+    if (iter == _windowMapper.end())
     {
         return;
     }
-    iter->second->EventHandler(e);
+    iter->second->eventHandler(e);
 }

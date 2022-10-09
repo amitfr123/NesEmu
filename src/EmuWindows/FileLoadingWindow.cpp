@@ -7,20 +7,20 @@
 
 FileLoadingWindow::FileLoadingWindow(TransferFile transfer_function) :  
     BaseWindow("File_Load_Window", WINDOW_RECT, 0, COLOR_RED),
-    _transfer_function(std::move(transfer_function)),
-    _input_text_line_helper(_event_mapper, std::bind(&FileLoadingWindow::LineChecker, this, std::placeholders::_1)),
-    _output_text_helper(std::string(RESOURCE_PATH) + "/fonts/PressStart2P.ttf", FONT_SIZE, COLOR_WHITE)
+    _transferFunction(std::move(transfer_function)),
+    _inputTextLineHelper(_eventMapper, std::bind(&FileLoadingWindow::LineChecker, this, std::placeholders::_1)),
+    _outputTextHelper(std::string(RESOURCE_PATH) + "/fonts/PressStart2P.ttf", FONT_SIZE, COLOR_WHITE)
 {
 }
 
-void FileLoadingWindow::RenderWindow()
+void FileLoadingWindow::renderWindow()
 {
     SDL_RenderClear(_renderer.get());
-    const std::string line = _input_text_line_helper.GetLine();
-    std::shared_ptr<SDL_Texture> texture(_output_text_helper.CreateTextTexture(line, _renderer));
+    const std::string line = _inputTextLineHelper.GetLine();
+    std::shared_ptr<SDL_Texture> texture(_outputTextHelper.CreateTextTexture(line, _renderer));
     SDL_Rect window_rect;
     SDL_GetWindowSize(_window.get(), &window_rect.w, &window_rect.h);
-    SDL_Rect line_rect = _output_text_helper.GetTrueTextRectangleDim(line);
+    SDL_Rect line_rect = _outputTextHelper.GetTrueTextRectangleDim(line);
     line_rect.x = (window_rect.w < line_rect.w)? window_rect.w - line_rect.w : 0;
     line_rect.y = ((window_rect.h > FONT_SIZE)? (window_rect.h - FONT_SIZE) / 2 + 1 : 0);
 
@@ -34,8 +34,8 @@ void FileLoadingWindow::LineChecker(const std::string& str)
     bool flag = false;
     if (std::filesystem::exists(str) && str.ends_with(".nes"))
     {
-        _transfer_function(str);
+        _transferFunction(str);
         flag = true;
     }
-    _input_text_line_helper.SetAfterEnterMessage(((flag)? "SUCCESS" : "FAIL"));
+    _inputTextLineHelper.SetAfterEnterMessage(((flag)? "SUCCESS" : "FAIL"));
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <span>
 
 #include "BaseWindow.hpp"
 
@@ -9,11 +10,8 @@
 
 class MemoryWindow : public BaseWindow {
 public:
-    using GetRamFunction = std::function<const std::array<uint8_t, 0x800>& ()>;
-
-    MemoryWindow(GetRamFunction get_ram_function);
-    void RenderWindow() override;
-    ~MemoryWindow() = default;
+    MemoryWindow(std::span<const uint8_t> ramView);
+    void renderWindow() override;
 private:
     static constexpr uint32_t SCROLL_SENSITIVITY = 10;
     static constexpr uint32_t FONT_SIZE = 10;
@@ -22,8 +20,8 @@ private:
     std::vector<std::string> RamViewBuilder();
     void MoveYIndex(int amount);
 
-    GetRamFunction _get_ram_function;
-    OutputTextHelper _output_text_helper;
-    MouseWheelScrollHelper _scroll_helper;
-    int _y_index;
+    std::span<const uint8_t> _ramView;
+    OutputTextHelper _outputTextHelper;
+    MouseWheelScrollHelper _scrollHelper;
+    int _yIndex;
 };

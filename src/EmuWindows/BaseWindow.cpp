@@ -4,7 +4,7 @@
 
 BaseWindow::BaseWindow(const std::string& window_title, SDL_Rect window_pos, uint32_t window_flags, SDL_Color window_background)
     :
-    _window_event_helper(_event_mapper, std::bind(&BaseWindow::OnWindowClose, this))
+    _windowEventHelper(_eventMapper, std::bind(&BaseWindow::OnWindowClose, this))
 {
     _window.reset(SDL_CreateWindow(
         window_title.c_str(),
@@ -26,7 +26,7 @@ BaseWindow::BaseWindow(const std::string& window_title, SDL_Rect window_pos, uin
     _window_closed = false;
 }
 
-void BaseWindow::HideWindow()
+void BaseWindow::hideWindow()
 {
     if (_window.get() == nullptr)
     {
@@ -35,7 +35,7 @@ void BaseWindow::HideWindow()
     SDL_HideWindow(_window.get());
 }
 
-void BaseWindow::ShowWindow()
+void BaseWindow::showWindow()
 {
     if (_window.get() == nullptr)
     {
@@ -44,23 +44,23 @@ void BaseWindow::ShowWindow()
     SDL_ShowWindow(_window.get());
 }
 
-bool BaseWindow::IsWinodwHidden()
+bool BaseWindow::isWindowHidden()
 {
     uint32_t flags = SDL_GetWindowFlags(_window.get());
     return (flags & SDL_WINDOW_MINIMIZED || flags & SDL_WINDOW_HIDDEN);
 }
 
-void BaseWindow::EventHandler(const SDL_Event& e)
+void BaseWindow::eventHandler(const SDL_Event& e)
 {
-    auto handler = _event_mapper.find(static_cast<SDL_EventType>(e.type));
-    if (handler == _event_mapper.end())
+    auto handler = _eventMapper.find(static_cast<SDL_EventType>(e.type));
+    if (handler == _eventMapper.end())
     {
         return;
     }
     handler->second(e);
 }
 
-uint32_t BaseWindow::GetWindowId()
+uint32_t BaseWindow::getWindowId()
 {
     if (_window.get() == nullptr)
     {
@@ -69,7 +69,7 @@ uint32_t BaseWindow::GetWindowId()
     return SDL_GetWindowID(_window.get());
 }
 
-bool BaseWindow::IsWindowClosed()
+bool BaseWindow::isWindowClosed()
 {
     return _window_closed;
 }

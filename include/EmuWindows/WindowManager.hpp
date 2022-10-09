@@ -4,9 +4,9 @@
 
 class WindowManager {
 private:
-    void EventMapperHelpr(uint32_t win_id, const SDL_Event& e);
+    void EventMapperHelper(uint32_t win_id, const SDL_Event& e);
 
-    std::unordered_map<uint32_t, std::shared_ptr<BaseWindow>> _window_mapper;
+    std::unordered_map<uint32_t, std::shared_ptr<BaseWindow>> _windowMapper;
 public:
     WindowManager();
 

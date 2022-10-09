@@ -12,19 +12,19 @@ Nes::Nes() :
     _bus()
 {
     _wm.AddNewWindow(std::make_shared<FileLoadingWindow>(std::bind(&Nes::InsertNewCartridge, this ,std::placeholders::_1)));
-    _wm.AddNewWindow(std::make_shared<MemoryWindow>(std::bind(&Bus::GetRam, &_bus)));
-    _run_master_clock = false;
+    _wm.AddNewWindow(std::make_shared<MemoryWindow>(_bus.getRamView()));
+    _runMasterClock = false;
 }
 
 void Nes::StartNesEmulation()
 {
     bool run_flag = true;
-    _wm_thread = std::thread([&]()
+    _wmThread = std::thread([&]()
     {
         _wm.EmuWindowManagerEventLoop();
         run_flag = false;
     });
-    _wm_thread.detach();
+    _wmThread.detach();
 
     #ifdef NESTEST_DEBUG
     Nes::InsertNewCartridge(std::string(RESOURCE_PATH) + "/nestest_rom/nestest.nes");
@@ -32,7 +32,7 @@ void Nes::StartNesEmulation()
 
     while (run_flag)
     {
-        if (_run_master_clock)
+        if (_runMasterClock)
         {
             _bus._cpu.cpuExecuteInstruction();
         }
@@ -57,7 +57,7 @@ void Nes::InsertNewCartridge(std::string file_path)
     }
     fs.close();
     _bus._cpu.cpuReset();
-    _run_master_clock = true;
+    _runMasterClock = true;
     // reset cpu
     // cpu dissasmble
     // window start

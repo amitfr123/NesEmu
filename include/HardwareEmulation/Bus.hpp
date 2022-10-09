@@ -5,6 +5,7 @@
 #include <functional>
 #include <memory>
 #include <stdint.h>
+#include <span>
 
 #include "Cpu.hpp"
 #include "Ppu.hpp"
@@ -33,12 +34,11 @@ public:
 
     void removeCartridge();
 
-    const std::array<uint8_t, 0x800>& GetRam()
+    std::span<const uint8_t> getRamView() const
     {
-        return _ram;
+        return std::span<const uint8_t>(_ram.begin(), _ram.size());
     }
 
-    ~Bus() = default;
 private:
     friend class Nes;
     static constexpr uint32_t TRUE_RAM_SIZE = 0x800;

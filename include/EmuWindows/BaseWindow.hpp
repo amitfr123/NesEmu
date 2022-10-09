@@ -11,14 +11,14 @@
 
 class BaseWindow {
 public:
-    bool InitWindow();
-    void HideWindow();
-    void ShowWindow();
-    bool IsWinodwHidden();
-    void EventHandler(const SDL_Event& e);
-    uint32_t GetWindowId();
-    bool IsWindowClosed();
-    virtual void RenderWindow(){}
+    bool initWindow();
+    void hideWindow();
+    void showWindow();
+    bool isWindowHidden();
+    void eventHandler(const SDL_Event& e);
+    uint32_t getWindowId();
+    bool isWindowClosed();
+    virtual void renderWindow(){}
     virtual ~BaseWindow() = default;
 
 protected:
@@ -26,12 +26,12 @@ protected:
 
     BaseWindow(const std::string& window_title, SDL_Rect window_pos, uint32_t window_flags, SDL_Color window_background);
     
-    std::unordered_map<SDL_EventType, EventHandlerFunction> _event_mapper;
+    std::unordered_map<SDL_EventType, EventHandlerFunction> _eventMapper;
     std::shared_ptr<SDL_Window> _window;
     std::shared_ptr<SDL_Renderer> _renderer;
     
     bool _window_closed;
 private:
     void OnWindowClose();
-    WindowEventHelper _window_event_helper;
+    WindowEventHelper _windowEventHelper;
 };

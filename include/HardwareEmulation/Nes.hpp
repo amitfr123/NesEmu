@@ -17,6 +17,6 @@ private:
 	void InsertNewCartridge(std::string file_path);
 	Bus _bus;
     WindowManager _wm;
-	std::thread _wm_thread;
-	bool _run_master_clock;
+	std::thread _wmThread;
+	bool _runMasterClock;
 };

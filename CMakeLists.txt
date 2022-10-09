@@ -7,7 +7,7 @@ enable_testing()
 
 file(GLOB_RECURSE SOURCES src/*.cpp)
 
-add_definitions("-DRESOURCE_PATH=\"${PROJECT_SOURCE_DIR}/resources/\"")
+add_definitions("-DRESOURCE_PATH=\"${PROJECT_SOURCE_DIR}/resources\"")
 add_definitions("-DDISSASMBLY_LOG_PATH=\"${PROJECT_SOURCE_DIR}/dissasmbly/log\"")
 
 #add_definitions("-DNESTEST_DEBUG")
