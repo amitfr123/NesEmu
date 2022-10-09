@@ -34,10 +34,7 @@ public:
 
     void removeCartridge();
 
-    std::span<const uint8_t> getRamView() const
-    {
-        return std::span<const uint8_t>(_ram.begin(), _ram.size());
-    }
+    std::span<const uint8_t> getRamView() const;
 
 private:
     friend class Nes;

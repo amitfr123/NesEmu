@@ -10,6 +10,12 @@ Bus::Bus() :
     _memoryMapper.emplace_front(phis_translation({0, RAM_MEMORY_RANGE, std::bind(&Bus::ramWrite, this, std::placeholders::_1, std::placeholders::_2), std::bind(&Bus::ramRead, this, std::placeholders::_1)}));
 }
 
+std::span<const uint8_t> Bus::getRamView() const
+{
+    return std::span<const uint8_t>(_ram.begin(), _ram.size());
+}
+
+
 void Bus::busWrite(const uint16_t address, const uint8_t data)
 {
     for (auto &target : _memoryMapper)
