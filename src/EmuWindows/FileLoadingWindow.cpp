@@ -16,7 +16,7 @@ FileLoadingWindow::FileLoadingWindow(TransferFile transfer_function) :
 void FileLoadingWindow::renderWindow()
 {
     SDL_RenderClear(_renderer.get());
-    const std::string line = _inputTextLineHelper.GetLine();
+    std::string line = _inputTextLineHelper.GetLine();
     std::shared_ptr<SDL_Texture> texture(_outputTextHelper.CreateTextTexture(line, _renderer));
     SDL_Rect window_rect;
     SDL_GetWindowSize(_window.get(), &window_rect.w, &window_rect.h);

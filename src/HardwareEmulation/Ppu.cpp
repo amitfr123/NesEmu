@@ -4,8 +4,6 @@
 Ppu::Ppu(WriteFunction bus_write, ReadFunction bus_read) :
     _busRead(std::move(bus_read)), _busWrite(std::move(bus_write))
 {
-    // TODO: bring a different palette file cuz this file is super dark
-    
     std::ifstream pFile(std::string(RESOURCE_PATH) + "/palettes/NES_Classic.pal", std::ios::binary);
     std::array<char, 3> pBuffer;
     size_t i = 0;
@@ -36,7 +34,7 @@ void Ppu::ppuWrite(const uint16_t address, const uint8_t data)
     }
 }
 
-uint8_t Ppu::ppuRead(const uint16_t address)
+uint8_t Ppu::ppuRead(uint16_t address)
 {
     uint8_t data;
     if (address >= 0 && address <= 0x1fff)

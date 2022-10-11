@@ -15,7 +15,7 @@ std::span<const uint8_t> Bus::getRamView() const
     return std::span<const uint8_t>(_ram.begin(), _ram.size());
 }
 
-void Bus::busWrite(const uint16_t address, const uint8_t data)
+void Bus::busWrite(uint16_t address, uint8_t data)
 {
     for (auto &target : _memoryMapper)
     {  
@@ -26,7 +26,7 @@ void Bus::busWrite(const uint16_t address, const uint8_t data)
     }
 }
 
-uint8_t Bus::busRead(const uint16_t address)
+uint8_t Bus::busRead(uint16_t address)
 {
     for (auto &target : _memoryMapper)
     {  
@@ -54,12 +54,12 @@ void Bus::removeCartridge()
     }
 }
 
-void Bus::ramWrite(const uint16_t address, const uint8_t data)
+void Bus::ramWrite(uint16_t address, uint8_t data)
 {
     _ram[address % TRUE_RAM_SIZE] = data;
 }
 
-uint8_t Bus::ramRead(const uint16_t address)
+uint8_t Bus::ramRead(uint16_t address)
 {
     return _ram[address % TRUE_RAM_SIZE];
 }

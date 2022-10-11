@@ -9,9 +9,9 @@ class Cartridge {
 public:
     Cartridge(std::fstream cartridge_file);
 
-    void CpuWrite(const uint16_t address, const uint8_t data);
+    void CpuWrite(uint16_t address, uint8_t data);
 
-    uint8_t CpuRead(const uint16_t address);
+    uint8_t CpuRead(uint16_t address);
 private:
     struct CartridgeHeader
     {

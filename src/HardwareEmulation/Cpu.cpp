@@ -189,12 +189,12 @@ uint8_t Cpu::getFlag(uint8_t flagMask)
     return (_p & flagMask)? 1 : 0;
 }
 
-void Cpu::cpuWrite(const uint16_t address, const uint8_t data)
+void Cpu::cpuWrite(uint16_t address, uint8_t data)
 {
     _busWrite(address, data);
 }
 
-uint8_t Cpu::cpuRead(const uint16_t address)
+uint8_t Cpu::cpuRead(uint16_t address)
 {
     return _busRead(address);
 }
@@ -306,7 +306,7 @@ uint16_t Cpu::indirectAddr()
     return addr;
 }
 
-void Cpu::Adc(const AMode addrMode)
+void Cpu::Adc(AMode addrMode)
 {
     uint16_t addr = _addressModeMapper[addrMode]();
     uint8_t data = cpuRead(addr);
@@ -318,7 +318,7 @@ void Cpu::Adc(const AMode addrMode)
     _a = temp & 0xff;
 }
 
-void Cpu::And(const AMode addrMode)
+void Cpu::And(AMode addrMode)
 {
     uint16_t addr = _addressModeMapper[addrMode]();
     uint8_t data = cpuRead(addr);
@@ -327,7 +327,7 @@ void Cpu::And(const AMode addrMode)
     setFlag(NEGATIVE_FLAG_MASK, _a & 0x80);
 }
 
-void Cpu::Asl(const AMode addrMode)
+void Cpu::Asl(AMode addrMode)
 {
     uint8_t data;
     uint16_t addr;
@@ -354,7 +354,7 @@ void Cpu::Asl(const AMode addrMode)
     }
 }
 
-void Cpu::Bcc(const AMode addrMode)
+void Cpu::Bcc(AMode addrMode)
 {
     
     uint16_t addr = _addressModeMapper[addrMode]();
@@ -368,7 +368,7 @@ void Cpu::Bcc(const AMode addrMode)
     }
 }
 
-void Cpu::Bcs(const AMode addrMode)
+void Cpu::Bcs(AMode addrMode)
 {
     
     uint16_t addr = _addressModeMapper[addrMode]();
@@ -382,7 +382,7 @@ void Cpu::Bcs(const AMode addrMode)
     }
 }
 
-void Cpu::Beq(const AMode addrMode)
+void Cpu::Beq(AMode addrMode)
 {
     
     uint16_t addr = _addressModeMapper[addrMode]();
@@ -396,7 +396,7 @@ void Cpu::Beq(const AMode addrMode)
     }
 }
 
-void Cpu::Bit(const AMode addrMode)
+void Cpu::Bit(AMode addrMode)
 {
     uint16_t addr = _addressModeMapper[addrMode]();
     uint8_t data = cpuRead(addr);
@@ -406,7 +406,7 @@ void Cpu::Bit(const AMode addrMode)
     setFlag(NEGATIVE_FLAG_MASK, data & 1 << 7);
 }
 
-void Cpu::Bmi(const AMode addrMode)
+void Cpu::Bmi(AMode addrMode)
 {
     
     uint16_t addr = _addressModeMapper[addrMode]();
@@ -420,7 +420,7 @@ void Cpu::Bmi(const AMode addrMode)
     }
 }
 
-void Cpu::Bne(const AMode addrMode)
+void Cpu::Bne(AMode addrMode)
 {
     
     uint16_t addr = _addressModeMapper[addrMode]();
@@ -434,7 +434,7 @@ void Cpu::Bne(const AMode addrMode)
     }
 }
 
-void Cpu::Bpl(const AMode addrMode)
+void Cpu::Bpl(AMode addrMode)
 {
     
     uint16_t addr = _addressModeMapper[addrMode]();
@@ -448,7 +448,7 @@ void Cpu::Bpl(const AMode addrMode)
     }
 }
 
-void Cpu::Brk(const AMode addrMode)
+void Cpu::Brk(AMode addrMode)
 {
     _pc++;
     setFlag(INTERRUPT_DISABLE_FLAG_MASK, true);
@@ -458,7 +458,7 @@ void Cpu::Brk(const AMode addrMode)
     _pc = cpuRead(_irqVectorMap[IrqType::BRK].first) | (cpuRead(_irqVectorMap[IrqType::BRK].second) << 8);
 }
 
-void Cpu::Bvc(const AMode addrMode)
+void Cpu::Bvc(AMode addrMode)
 {
     
     uint16_t addr = _addressModeMapper[addrMode]();
@@ -472,7 +472,7 @@ void Cpu::Bvc(const AMode addrMode)
     }
 }
 
-void Cpu::Bvs(const AMode addrMode)
+void Cpu::Bvs(AMode addrMode)
 {
     
     uint16_t addr = _addressModeMapper[addrMode]();
@@ -486,27 +486,27 @@ void Cpu::Bvs(const AMode addrMode)
     }
 }
 
-void Cpu::Clc(const AMode addrMode)
+void Cpu::Clc(AMode addrMode)
 {
     clearFlag(CARRY_FLAG_MASK);
 }
 
-void Cpu::Cld(const AMode addrMode)
+void Cpu::Cld(AMode addrMode)
 {
     clearFlag(DECIMAL_MODE_FLAG_MASK);
 }
 
-void Cpu::Cli(const AMode addrMode)
+void Cpu::Cli(AMode addrMode)
 {
     clearFlag(INTERRUPT_DISABLE_FLAG_MASK);
 }
 
-void Cpu::Clv(const AMode addrMode)
+void Cpu::Clv(AMode addrMode)
 {
     clearFlag(OVERFLOW_FLAG_MASK);
 }
 
-void Cpu::Cmp(const AMode addrMode)
+void Cpu::Cmp(AMode addrMode)
 {
     uint16_t addr = _addressModeMapper[addrMode]();
     uint8_t data = cpuRead(addr);
@@ -516,7 +516,7 @@ void Cpu::Cmp(const AMode addrMode)
     setFlag(NEGATIVE_FLAG_MASK, temp & 0x80);
 }
 
-void Cpu::Cpx(const AMode addrMode)
+void Cpu::Cpx(AMode addrMode)
 {
     uint16_t addr = _addressModeMapper[addrMode]();
     uint8_t data = cpuRead(addr);
@@ -526,7 +526,7 @@ void Cpu::Cpx(const AMode addrMode)
     setFlag(NEGATIVE_FLAG_MASK, temp & 0x80);
 }
 
-void Cpu::Cpy(const AMode addrMode)
+void Cpu::Cpy(AMode addrMode)
 {
     uint16_t addr = _addressModeMapper[addrMode]();
     uint8_t data = cpuRead(addr);
@@ -536,7 +536,7 @@ void Cpu::Cpy(const AMode addrMode)
     setFlag(NEGATIVE_FLAG_MASK, temp & 0x80);
 }
 
-void Cpu::Dec(const AMode addrMode)
+void Cpu::Dec(AMode addrMode)
 {
     uint16_t addr = _addressModeMapper[addrMode]();
     uint8_t data = cpuRead(addr) - 1;
@@ -545,21 +545,21 @@ void Cpu::Dec(const AMode addrMode)
     cpuWrite(addr, data);
 }
 
-void Cpu::Dex(const AMode addrMode)
+void Cpu::Dex(AMode addrMode)
 {
     _x--;
     setFlag(ZERO_FLAG_MASK, !(_x));
     setFlag(NEGATIVE_FLAG_MASK, _x & 0x80);
 }
 
-void Cpu::Dey(const AMode addrMode)
+void Cpu::Dey(AMode addrMode)
 {
     _y--;
     setFlag(ZERO_FLAG_MASK, !(_y));
     setFlag(NEGATIVE_FLAG_MASK, _y & 0x80);
 }
 
-void Cpu::Eor(const AMode addrMode)
+void Cpu::Eor(AMode addrMode)
 {
     uint16_t addr = _addressModeMapper[addrMode]();
     uint8_t data = cpuRead(addr);
@@ -568,7 +568,7 @@ void Cpu::Eor(const AMode addrMode)
     setFlag(NEGATIVE_FLAG_MASK, _a & 0x80);
 }
 
-void Cpu::Inc(const AMode addrMode)
+void Cpu::Inc(AMode addrMode)
 {
     uint16_t addr = _addressModeMapper[addrMode]();
     uint8_t data = cpuRead(addr) + 1;
@@ -577,27 +577,27 @@ void Cpu::Inc(const AMode addrMode)
     cpuWrite(addr, data);
 }
 
-void Cpu::Inx(const AMode addrMode)
+void Cpu::Inx(AMode addrMode)
 {
     _x++;
     setFlag(ZERO_FLAG_MASK, !(_x));
     setFlag(NEGATIVE_FLAG_MASK, _x & 0x80);
 }
 
-void Cpu::Iny(const AMode addrMode)
+void Cpu::Iny(AMode addrMode)
 {
     _y++;
     setFlag(ZERO_FLAG_MASK, !(_y));
     setFlag(NEGATIVE_FLAG_MASK, _y & 0x80);
 }
 
-void Cpu::Jmp(const AMode addrMode)
+void Cpu::Jmp(AMode addrMode)
 {
     uint16_t addr = _addressModeMapper[addrMode]();
     _pc = addr;
 }
 
-void Cpu::Jsr(const AMode addrMode)
+void Cpu::Jsr(AMode addrMode)
 {
     uint16_t addr = _addressModeMapper[addrMode]();
     _pc--; // pc has jumped 3 times and now we need to go back once
@@ -606,7 +606,7 @@ void Cpu::Jsr(const AMode addrMode)
     _pc = addr;
 }
 
-void Cpu::Lda(const AMode addrMode)
+void Cpu::Lda(AMode addrMode)
 {
     uint16_t addr = _addressModeMapper[addrMode]();
     _a = cpuRead(addr);
@@ -614,7 +614,7 @@ void Cpu::Lda(const AMode addrMode)
     setFlag(NEGATIVE_FLAG_MASK, _a & 0x80);
 }
 
-void Cpu::Ldx(const AMode addrMode)
+void Cpu::Ldx(AMode addrMode)
 {
     uint16_t addr = _addressModeMapper[addrMode]();
     _x = cpuRead(addr);
@@ -622,7 +622,7 @@ void Cpu::Ldx(const AMode addrMode)
     setFlag(NEGATIVE_FLAG_MASK, _x & 0x80);
 }
 
-void Cpu::Ldy(const AMode addrMode)
+void Cpu::Ldy(AMode addrMode)
 {
     uint16_t addr = _addressModeMapper[addrMode]();
     _y = cpuRead(addr);
@@ -630,7 +630,7 @@ void Cpu::Ldy(const AMode addrMode)
     setFlag(NEGATIVE_FLAG_MASK, _y & 0x80);
 }
 
-void Cpu::Lsr(const AMode addrMode)
+void Cpu::Lsr(AMode addrMode)
 {
     uint8_t data;
     uint16_t addr;
@@ -657,13 +657,13 @@ void Cpu::Lsr(const AMode addrMode)
     }
 }
 
-void Cpu::Nop(const AMode addrMode)
+void Cpu::Nop(AMode addrMode)
 {
     // This line is used to handle illegal nops that need to preform pc advencments  
     _addressModeMapper[addrMode]();
 }
 
-void Cpu::Ora(const AMode addrMode)
+void Cpu::Ora(AMode addrMode)
 {
     uint16_t addr = _addressModeMapper[addrMode]();
     uint8_t data = cpuRead(addr);
@@ -672,31 +672,31 @@ void Cpu::Ora(const AMode addrMode)
     setFlag(NEGATIVE_FLAG_MASK, _a & 0x80);
 }
 
-void Cpu::Pha(const AMode addrMode)
+void Cpu::Pha(AMode addrMode)
 {
     cpuWrite(STACK_OFFSET + _sp--, _a);
 }
 
-void Cpu::Php(const AMode addrMode)
+void Cpu::Php(AMode addrMode)
 {
     cpuWrite(STACK_OFFSET + _sp--, _p | BREAK_COMMAND_FLAG_MASK | RESERVED_FLAG_MASK);
 }
 
-void Cpu::Pla(const AMode addrMode)
+void Cpu::Pla(AMode addrMode)
 {
     _a = cpuRead(STACK_OFFSET + ++_sp);
     setFlag(ZERO_FLAG_MASK, !(_a));
     setFlag(NEGATIVE_FLAG_MASK, _a & 0x80);
 }
 
-void Cpu::Plp(const AMode addrMode)
+void Cpu::Plp(AMode addrMode)
 {
     _p = cpuRead(STACK_OFFSET + ++_sp);
     clearFlag(BREAK_COMMAND_FLAG_MASK);
     clearFlag(RESERVED_FLAG_MASK);
 }
 
-void Cpu::Rol(const AMode addrMode)
+void Cpu::Rol(AMode addrMode)
 {
     uint8_t data;
     uint16_t addr;
@@ -723,7 +723,7 @@ void Cpu::Rol(const AMode addrMode)
         cpuWrite(addr, temp & 0xff);
     }
 }
-void Cpu::Ror(const AMode addrMode)
+void Cpu::Ror(AMode addrMode)
 {
     uint8_t data;
     uint16_t addr;
@@ -751,7 +751,7 @@ void Cpu::Ror(const AMode addrMode)
     }
 }
 
-void Cpu::Rti(const AMode addrMode)
+void Cpu::Rti(AMode addrMode)
 {
     _p = cpuRead(STACK_OFFSET + ++_sp);
     _pc = cpuRead(STACK_OFFSET + ++_sp);
@@ -760,14 +760,14 @@ void Cpu::Rti(const AMode addrMode)
     clearFlag(RESERVED_FLAG_MASK);
 }
 
-void Cpu::Rts(const AMode addrMode)
+void Cpu::Rts(AMode addrMode)
 {
     _pc = cpuRead(STACK_OFFSET + ++_sp);
     _pc |= cpuRead(STACK_OFFSET + ++_sp) << 8;
     _pc++;
 }
 
-void Cpu::Sbc(const AMode addrMode)
+void Cpu::Sbc(AMode addrMode)
 {
     uint16_t addr = _addressModeMapper[addrMode]();
     uint8_t data = cpuRead(addr);
@@ -779,73 +779,73 @@ void Cpu::Sbc(const AMode addrMode)
     _a = temp & 0xff;
 }
 
-void Cpu::Sec(const AMode addrMode)
+void Cpu::Sec(AMode addrMode)
 {
     setFlag(CARRY_FLAG_MASK, true);
 }
 
-void Cpu::Sed(const AMode addrMode)
+void Cpu::Sed(AMode addrMode)
 {
     setFlag(DECIMAL_MODE_FLAG_MASK, true);
 }
 
-void Cpu::Sei(const AMode addrMode)
+void Cpu::Sei(AMode addrMode)
 {
     setFlag(INTERRUPT_DISABLE_FLAG_MASK, true);
 }
 
-void Cpu::Sta(const AMode addrMode)
+void Cpu::Sta(AMode addrMode)
 {
     uint16_t addr = _addressModeMapper[addrMode]();
     cpuWrite(addr, _a);
 }
 
-void Cpu::Stx(const AMode addrMode)
+void Cpu::Stx(AMode addrMode)
 {
     uint16_t addr = _addressModeMapper[addrMode]();
     cpuWrite(addr, _x);
 }
 
-void Cpu::Sty(const AMode addrMode)
+void Cpu::Sty(AMode addrMode)
 {
     uint16_t addr = _addressModeMapper[addrMode]();
     cpuWrite(addr, _y);
 }
 
-void Cpu::Tax(const AMode addrMode)
+void Cpu::Tax(AMode addrMode)
 {
     _x = _a;
     setFlag(ZERO_FLAG_MASK, !(_x));
     setFlag(NEGATIVE_FLAG_MASK, _x & 0x80);
 }
 
-void Cpu::Tay(const AMode addrMode)
+void Cpu::Tay(AMode addrMode)
 {
     _y = _a;
     setFlag(ZERO_FLAG_MASK, !(_y));
     setFlag(NEGATIVE_FLAG_MASK, _y & 0x80);
 }
 
-void Cpu::Tsx(const AMode addrMode)
+void Cpu::Tsx(AMode addrMode)
 {
     _x = _sp;
     setFlag(ZERO_FLAG_MASK, !(_x));
     setFlag(NEGATIVE_FLAG_MASK, _x & 0x80);
 }
 
-void Cpu::Txa(const AMode addrMode)
+void Cpu::Txa(AMode addrMode)
 {
     _a = _x;
     setFlag(ZERO_FLAG_MASK, !(_a));
     setFlag(NEGATIVE_FLAG_MASK, _a & 0x80);
 }
 
-void Cpu::Txs(const AMode addrMode)
+void Cpu::Txs(AMode addrMode)
 {
     _sp = _x;
 }
 
-void Cpu::Tya(const AMode addrMode)
+void Cpu::Tya(AMode addrMode)
 {
     _a = _y;
     setFlag(ZERO_FLAG_MASK, !(_a));

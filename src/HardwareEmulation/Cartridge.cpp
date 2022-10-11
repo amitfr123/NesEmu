@@ -41,12 +41,12 @@ Cartridge::Cartridge(std::fstream cartridge_file)
     }
 }
 
-void Cartridge::CpuWrite(const uint16_t address, const uint8_t data)
+void Cartridge::CpuWrite(uint16_t address, uint8_t data)
 {
     _mapper->CpuWriteMap(address, data);
 }
 
-uint8_t Cartridge::CpuRead(const uint16_t address)
+uint8_t Cartridge::CpuRead(uint16_t address)
 {
     return _mapper->CpuReadMap(address);
 }

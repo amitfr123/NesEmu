@@ -8,8 +8,8 @@
 
 class Cpu {
 public:
-    using WriteFunction = std::function<void (const uint16_t address, const uint8_t data)>;
-    using ReadFunction = std::function<uint8_t (const uint16_t address)>;
+    using WriteFunction = std::function<void (uint16_t address, uint8_t data)>;
+    using ReadFunction = std::function<uint8_t (uint16_t address)>;
 
     Cpu(WriteFunction bus_write, ReadFunction bus_read);
 
@@ -144,7 +144,7 @@ private:
     };
 
     using AddressFunction = std::function<uint16_t ()>;
-    using InstructionFunction = std::function<void (const AMode addrMode)>;
+    using InstructionFunction = std::function<void (AMode addrMode)>;
 
     uint16_t _pc; //program counter
     uint8_t _sp; //stack
@@ -245,9 +245,9 @@ private:
 
     uint8_t getFlag(uint8_t flagMask);
 
-    void cpuWrite(const uint16_t address, const uint8_t data);
+    void cpuWrite(uint16_t address, uint8_t data);
 
-    uint8_t cpuRead(const uint16_t address);
+    uint8_t cpuRead(uint16_t address);
 
     // This are the diffrent addresing modes:
 
@@ -278,62 +278,62 @@ private:
     uint16_t indirectAddr(); 
 
     // Instruction set
-    void Adc(const AMode addrMode);
-    void And(const AMode addrMode);
-    void Asl(const AMode addrMode);
-    void Bcc(const AMode addrMode);
-    void Bcs(const AMode addrMode);
-    void Beq(const AMode addrMode);
-    void Bit(const AMode addrMode);
-    void Bmi(const AMode addrMode);
-    void Bne(const AMode addrMode);
-    void Bpl(const AMode addrMode);
-    void Brk(const AMode addrMode);
-    void Bvc(const AMode addrMode);
-    void Bvs(const AMode addrMode);
-    void Clc(const AMode addrMode);
-    void Cld(const AMode addrMode);
-    void Cli(const AMode addrMode);
-    void Clv(const AMode addrMode);
-    void Cmp(const AMode addrMode);
-    void Cpx(const AMode addrMode);
-    void Cpy(const AMode addrMode);
-    void Dec(const AMode addrMode);
-    void Dex(const AMode addrMode);
-    void Dey(const AMode addrMode);
-    void Eor(const AMode addrMode);
-    void Inc(const AMode addrMode);
-    void Inx(const AMode addrMode);
-    void Iny(const AMode addrMode);
-    void Jmp(const AMode addrMode);
-    void Jsr(const AMode addrMode);
-    void Lda(const AMode addrMode);
-    void Ldx(const AMode addrMode);
-    void Ldy(const AMode addrMode);
-    void Lsr(const AMode addrMode);
-    void Nop(const AMode addrMode);
-    void Ora(const AMode addrMode);
-    void Pha(const AMode addrMode);
-    void Php(const AMode addrMode);
-    void Pla(const AMode addrMode);
-    void Plp(const AMode addrMode);
-    void Rol(const AMode addrMode);
-    void Ror(const AMode addrMode);
-    void Rti(const AMode addrMode);
-    void Rts(const AMode addrMode);
-    void Sbc(const AMode addrMode);
-    void Sec(const AMode addrMode);
-    void Sed(const AMode addrMode);
-    void Sei(const AMode addrMode);
-    void Sta(const AMode addrMode);
-    void Stx(const AMode addrMode);
-    void Sty(const AMode addrMode);
-    void Tax(const AMode addrMode);
-    void Tay(const AMode addrMode);
-    void Tsx(const AMode addrMode);
-    void Txa(const AMode addrMode);
-    void Txs(const AMode addrMode);
-    void Tya(const AMode addrMode);
+    void Adc(AMode addrMode);
+    void And(AMode addrMode);
+    void Asl(AMode addrMode);
+    void Bcc(AMode addrMode);
+    void Bcs(AMode addrMode);
+    void Beq(AMode addrMode);
+    void Bit(AMode addrMode);
+    void Bmi(AMode addrMode);
+    void Bne(AMode addrMode);
+    void Bpl(AMode addrMode);
+    void Brk(AMode addrMode);
+    void Bvc(AMode addrMode);
+    void Bvs(AMode addrMode);
+    void Clc(AMode addrMode);
+    void Cld(AMode addrMode);
+    void Cli(AMode addrMode);
+    void Clv(AMode addrMode);
+    void Cmp(AMode addrMode);
+    void Cpx(AMode addrMode);
+    void Cpy(AMode addrMode);
+    void Dec(AMode addrMode);
+    void Dex(AMode addrMode);
+    void Dey(AMode addrMode);
+    void Eor(AMode addrMode);
+    void Inc(AMode addrMode);
+    void Inx(AMode addrMode);
+    void Iny(AMode addrMode);
+    void Jmp(AMode addrMode);
+    void Jsr(AMode addrMode);
+    void Lda(AMode addrMode);
+    void Ldx(AMode addrMode);
+    void Ldy(AMode addrMode);
+    void Lsr(AMode addrMode);
+    void Nop(AMode addrMode);
+    void Ora(AMode addrMode);
+    void Pha(AMode addrMode);
+    void Php(AMode addrMode);
+    void Pla(AMode addrMode);
+    void Plp(AMode addrMode);
+    void Rol(AMode addrMode);
+    void Ror(AMode addrMode);
+    void Rti(AMode addrMode);
+    void Rts(AMode addrMode);
+    void Sbc(AMode addrMode);
+    void Sec(AMode addrMode);
+    void Sed(AMode addrMode);
+    void Sei(AMode addrMode);
+    void Sta(AMode addrMode);
+    void Stx(AMode addrMode);
+    void Sty(AMode addrMode);
+    void Tax(AMode addrMode);
+    void Tay(AMode addrMode);
+    void Tsx(AMode addrMode);
+    void Txa(AMode addrMode);
+    void Txs(AMode addrMode);
+    void Tya(AMode addrMode);
 
     void Irq();
     void Nmi();

@@ -1,6 +1,6 @@
 #include "WindowUtilities/OutputTextHelper.hpp"
 
-OutputTextHelper::OutputTextHelper(const std::string& font_path, const uint32_t font_size, SDL_Color text_color) 
+OutputTextHelper::OutputTextHelper(const std::string& font_path, uint32_t font_size, SDL_Color text_color) 
     :
     _color(std::move(text_color))
 {

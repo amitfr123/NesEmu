@@ -19,8 +19,8 @@ public:
 	{
 	}
 
-	virtual void CpuWriteMap(const uint16_t address, const uint8_t data) = 0;
-	virtual uint8_t CpuReadMap(const uint16_t address) = 0;
+	virtual void CpuWriteMap(uint16_t address, uint8_t data) = 0;
+	virtual uint8_t CpuReadMap(uint16_t address) = 0;
 
 	virtual ~Mapper() = default;
 protected:

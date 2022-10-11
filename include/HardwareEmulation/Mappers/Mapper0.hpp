@@ -11,8 +11,8 @@ public:
 	{
 	}
 
-	void CpuWriteMap(const uint16_t address, const uint8_t data) override;
-	uint8_t CpuReadMap(const uint16_t address) override;
+	void CpuWriteMap(uint16_t address, uint8_t data) override;
+	uint8_t CpuReadMap(uint16_t address) override;
 
 	~Mapper0() = default;
 };

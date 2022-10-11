@@ -9,7 +9,7 @@
 
 class OutputTextHelper {
 public:
-    OutputTextHelper(const std::string& font_path, const uint32_t font_size, SDL_Color text_color);
+    OutputTextHelper(const std::string& font_path, uint32_t font_size, SDL_Color text_color);
 
     std::shared_ptr<SDL_Texture> CreateTextTexture(const std::string& text, std::shared_ptr<SDL_Renderer> renderer);
 

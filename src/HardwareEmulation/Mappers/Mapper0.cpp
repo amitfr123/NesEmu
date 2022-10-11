@@ -1,6 +1,6 @@
 #include "HardwareEmulation/Mappers/Mapper0.hpp"
 
-void Mapper0::CpuWriteMap(const uint16_t address, const uint8_t data) 
+void Mapper0::CpuWriteMap(uint16_t address, uint8_t data) 
 {
     if (address >= 0x6000 && address <= 0x7fff)
     {
@@ -13,7 +13,7 @@ void Mapper0::CpuWriteMap(const uint16_t address, const uint8_t data)
     }
 }
 
-uint8_t Mapper0::CpuReadMap(const uint16_t address) 
+uint8_t Mapper0::CpuReadMap(uint16_t address) 
 {
     if (address >= 0x6000 && address <= 0x7fff)
     {
