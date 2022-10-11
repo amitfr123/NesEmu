@@ -15,7 +15,6 @@ std::span<const uint8_t> Bus::getRamView() const
     return std::span<const uint8_t>(_ram.begin(), _ram.size());
 }
 
-
 void Bus::busWrite(const uint16_t address, const uint8_t data)
 {
     for (auto &target : _memoryMapper)

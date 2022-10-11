@@ -5,6 +5,7 @@
 
 #include "EmuWindows/FileLoadingWindow.hpp"
 #include "EmuWindows/MemoryWindow.hpp"
+#include "EmuWindows/PaletteWindow.hpp"
 
 #include <unistd.h>
 
@@ -13,6 +14,7 @@ Nes::Nes() :
 {
     _wm.AddNewWindow(std::make_shared<FileLoadingWindow>(std::bind(&Nes::InsertNewCartridge, this ,std::placeholders::_1)));
     _wm.AddNewWindow(std::make_shared<MemoryWindow>(_bus.getRamView()));
+    _wm.AddNewWindow(std::make_shared<PaletteWindow>(_bus._ppu.getPalette()));
     _runMasterClock = false;
 }
 
