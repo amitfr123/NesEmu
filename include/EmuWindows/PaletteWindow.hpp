@@ -7,7 +7,7 @@
 
 class PaletteWindow : public BaseWindow {
 public:
-    PaletteWindow(std::span<const std::tuple<uint8_t,uint8_t,uint8_t>> paletteView);
+    PaletteWindow(std::span<const uint32_t> paletteView);
 
     void renderWindow() override;
 private:
@@ -15,6 +15,6 @@ private:
     static constexpr uint32_t PALETTE_COL_SIZE = 4;
     static constexpr uint32_t PIXEL_SIZE = 20;
 
-    std::span<const std::tuple<uint8_t,uint8_t,uint8_t>> _paletteView;
+    std::span<const uint32_t> _paletteView;
     PixelTextureHelper _pixelTextureHelper;
 };

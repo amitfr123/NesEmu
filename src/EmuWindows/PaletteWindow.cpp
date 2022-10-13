@@ -1,7 +1,7 @@
 #include "EmuWindows/PaletteWindow.hpp"
 #include "WindowUtilities/SdlColorHelper.hpp"
 
-PaletteWindow::PaletteWindow(std::span<const std::tuple<uint8_t,uint8_t,uint8_t>> paletteView) : 
+PaletteWindow::PaletteWindow(std::span<const uint32_t> paletteView) : 
     _pixelTextureHelper(PALETTE_ROW_SIZE, PALETTE_COL_SIZE, PIXEL_SIZE),
     BaseWindow("PaletteWindow", {0,0, PALETTE_ROW_SIZE * PIXEL_SIZE, PALETTE_COL_SIZE * PIXEL_SIZE}, 0, COLOR_WHITE),
     _paletteView(std::move(paletteView))

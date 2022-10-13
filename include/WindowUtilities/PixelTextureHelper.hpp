@@ -15,10 +15,10 @@ public:
 
     void clearTexture();
 
-    void fillTexture(std::span<const std::tuple<uint8_t, uint8_t, uint8_t>> pixelSource);
+    void fillTexture(std::span<const uint32_t> pixelSource);
 
 private:
-    void drawPixel(SDL_Color color, uint32_t x, uint32_t y);
+    void drawPixel(uint8_t r, uint8_t g, uint8_t b, uint32_t x, uint32_t y);
 
     std::shared_ptr<SDL_Surface> _surface;
     uint32_t _pixelSize;

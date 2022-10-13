@@ -28,21 +28,24 @@ void PixelTextureHelper::clearTexture()
     SDL_UnlockSurface(_surface.get());
 }
 
-void PixelTextureHelper::fillTexture(std::span<const std::tuple<uint8_t, uint8_t, uint8_t>> pixelSource)
+void PixelTextureHelper::fillTexture(std::span<const uint32_t> pixelSource)
 {
     uint32_t num = 0;
     SDL_LockSurface(_surface.get());
     for (auto iter : pixelSource)
     {
-        drawPixel({std::get<0>(iter), std::get<1>(iter), std::get<2>(iter)}, num % (_surface->w / _pixelSize), num / (_surface->w / _pixelSize));
+        uint8_t r = ((iter & 0xff0000) >> 16);
+        uint8_t g = ((iter & 0xff00) >> 8);
+        uint8_t b = (iter & 0xff);
+        drawPixel(r, g, b, num % (_surface->w / _pixelSize), num / (_surface->w / _pixelSize));
         num++;
     }
     SDL_UnlockSurface(_surface.get());
 }
 
-void PixelTextureHelper::drawPixel(SDL_Color color, uint32_t x, uint32_t y)
+void PixelTextureHelper::drawPixel(uint8_t r, uint8_t g, uint8_t b, uint32_t x, uint32_t y)
 {
-    uint32_t pixelVal = SDL_MapRGBA(_surface->format, color.r, color.g, color.b, 255);
+    uint32_t pixelVal = SDL_MapRGBA(_surface->format, r, g, b, 255);
     SDL_Rect pixel = {static_cast<int>(x * _pixelSize), static_cast<int>(y * _pixelSize), static_cast<int>(_pixelSize), static_cast<int>(_pixelSize)};
     SDL_FillRect(_surface.get(), &pixel, pixelVal);
 }
