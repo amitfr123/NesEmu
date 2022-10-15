@@ -6,7 +6,7 @@
 #include "Bus.hpp"
 #include "Ppu.hpp"
 #include "EmuWindows/WindowManager.hpp"
-
+#include "EmuWindows/ScreenWindow.hpp"
 class Nes
 {
 public:
@@ -19,4 +19,5 @@ private:
     WindowManager _wm;
 	std::thread _wmThread;
 	bool _runMasterClock;
+	std::shared_ptr<ScreenWindow> _screen;
 };

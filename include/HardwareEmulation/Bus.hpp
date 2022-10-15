@@ -26,10 +26,6 @@ public:
 
     Bus();
 
-    void busWrite(uint16_t address, uint8_t data);
-
-    uint8_t busRead(uint16_t address);
-
     void insertCartridge(std::fstream file);
 
     void removeCartridge();
@@ -40,6 +36,12 @@ private:
     friend class Nes;
     static constexpr uint32_t TRUE_RAM_SIZE = 0x800;
     static constexpr uint32_t RAM_MEMORY_RANGE = 0x2000;
+
+    void cpuWrite(uint16_t address, uint8_t data);
+    uint8_t cpuRead(uint16_t address);
+
+    bool ppuWrite(uint16_t address, uint8_t data);
+    bool ppuRead(uint16_t address, uint8_t& data);
 
     void ramWrite(uint16_t address, uint8_t data);
     uint8_t ramRead(uint16_t address);

@@ -10,9 +10,11 @@ public:
 		Mapper(std::move(prg_rom_bank_vector), std::move(chr_rom_bank_vector))
 	{
 	}
+	bool cpuWriteMap(uint16_t address, uint8_t data) override;
+	bool cpuReadMap(uint16_t address, uint8_t& data) override;
 
-	void CpuWriteMap(uint16_t address, uint8_t data) override;
-	uint8_t CpuReadMap(uint16_t address) override;
+	bool ppuWriteMap(uint16_t address, uint8_t data) override;
+	bool ppuReadMap(uint16_t address, uint8_t& data) override;
 
 	~Mapper0() = default;
 };

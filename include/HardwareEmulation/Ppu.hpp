@@ -3,17 +3,32 @@
 #include <functional>
 #include <cstdint>
 #include <span>
+#include <vector>
 
 class Ppu
 {
 public:
-    using WriteFunction = std::function<void (uint16_t address, uint8_t data)>;
-    using ReadFunction = std::function<uint8_t (uint16_t address)>;
+    using WriteFunction = std::function<bool (uint16_t address, uint8_t data)>;
+    using ReadFunction = std::function<bool (uint16_t address, uint8_t& data)>;
+
     Ppu(WriteFunction bus_write, ReadFunction bus_read);
 
-    void writeToRegister(const uint8_t offset, const uint8_t data);
+    void writeToRegister(uint16_t address, uint8_t data);
+    uint8_t readFromRegister(uint16_t address);
 
-    std::span<const std::tuple<uint8_t,uint8_t,uint8_t>> getPalette();
+    void executeCycle();
+
+    bool getNmiStatus();
+    void clearNmiStatus();
+
+    void setMirroringMode(uint8_t mode);
+
+    void reset();
+
+    std::span<const uint32_t> getPalette();
+    std::array<std::array<uint32_t, 0x4000>, 2> getPatternTable(uint8_t paletteId);
+    std::array<uint32_t, 4> getWorkPaletteRgb(uint8_t paletteId);
+    std::span<const uint32_t> getScreen();
 private:
     static constexpr uint8_t PPU_CTRL_OFFSET = 0; // W
     static constexpr uint8_t PPU_MASK_OFFSET = 1; // W
@@ -22,59 +37,155 @@ private:
     static constexpr uint8_t PPU_OAM_DATA_OFFSET = 4; // WR
     static constexpr uint8_t PPU_SCROLL_OFFSET = 5; // W
     static constexpr uint8_t PPU_ADDR_OFFSET = 6; // W
-    static constexpr uint8_t PPU_DATA_OFFSET = 7; //W
+    static constexpr uint8_t PPU_DATA_OFFSET = 7; //WR
 
-    // CTRL
-    static constexpr uint8_t PPU_CTRL_NAME_TABLE_ADDR_MASK = 0x03;
-    static constexpr uint8_t PPU_CTRL_VRAM_INC_MASK = 0x04;
-    static constexpr uint8_t PPU_CTRL_SPRITE_TABLE_ADDR_MASK = 0x08;
-    static constexpr uint8_t PPU_CTRL_SPRITE_SIZE_MASK = 0x10;
-    static constexpr uint8_t PPU_CTRL_BACKGROUND_TABLE_ADDR_MASK = 0x20;
-    static constexpr uint8_t PPU_CTRL_MASTER_SLAVE_SELECT_MASK = 0x40;
-    static constexpr uint8_t PPU_CTRL_GEN_NMI_MASK = 0x80;
+    static constexpr uint16_t PPU_PATTERN_ADDR_START = 0; //WR
+    static constexpr uint16_t PPU_PATTERN_ADDR_END = 0X1FFF; //WR
 
-    // MASK
-    static constexpr uint8_t PPU_GRAYSCALE_MASK = 0x01;
-    static constexpr uint8_t PPU_SHOW_BACKGROUND_LEFT_8_MASK = 0x02;
-    static constexpr uint8_t PPU_SHOW_SPRITE_LEFT_8_MASK = 0x04;
-    static constexpr uint8_t PPU_SHOW_BACKGROUND_MASK = 0x08;
-    static constexpr uint8_t PPU_SHOW_SPRITE_MASK = 0X10;
-    static constexpr uint8_t PPU_EMPHASIZE_RED_MASK = 0X20;
-    static constexpr uint8_t PPU_EMPHASIZE_GREEN_MASK = 0X40;
-    static constexpr uint8_t PPU_EMPHASIZE_BLUE_MASK = 0X80;
+    static constexpr uint16_t PPU_NAME_TABLE_ADDR_START = 0X2000; //WR
+    static constexpr uint16_t PPU_NAME_TABLE_ADDR_END = 0X2fff; //WR
+    static constexpr uint16_t PPU_NAME_TABLE_ADDR_M_START = 0X3000; //WR
+    static constexpr uint16_t PPU_NAME_TABLE_ADDR_M_END = 0X3eff; //WR
+    static constexpr uint16_t PPU_NAME_TABLE_SIZE = 0X400; //WR
 
-    // STATUS
-    static constexpr uint8_t PPU_OPEN_BUS_MASK = 0x1F;
-    static constexpr uint8_t PPU_SPRITE_OVERFLOW_MASK = 0x20;
-    static constexpr uint8_t PPU_SPRITE_HIT_0_MASK = 0X40;
-    static constexpr uint8_t PPU_VERTICAL_BANK_MASK = 0X80;
+    static constexpr uint16_t PPU_PALETTE_ADDR_START = 0X3F00; //WR
+    static constexpr uint16_t PPU_PALETTE_ADDR_END = 0X3FFF; //WR
+
+    static constexpr uint16_t PPU_ATTRIBUTE_TABLE_OFFSET = 0x3c0; //WR
 
     using TilePlane = std::array<uint8_t, 8>;
     using Tile = std::array<TilePlane, 2>;
     using PatternSection = std::array<std::array<TilePlane, 2>, 256>;
+    using PatternTable = std::array<PatternSection, 2>;
 
-    using PaletteTable = std::array<std::tuple<uint8_t,uint8_t,uint8_t>, 64>;
-    struct PatternTableAddr
+    using PaletteTable = std::array<uint32_t, 64>;
+
+    using WorkPaletteSet = std::array<uint8_t, 32>;
+
+    using NameTable = std::array<uint8_t, PPU_NAME_TABLE_SIZE>;
+
+    union PatternTableAddr
     {
-        uint16_t t :3;
-        uint16_t p :1;
-        uint16_t c :4;
-        uint16_t r :4;
-        uint16_t h :1;
+        struct
+        {
+            uint16_t t :3;
+            uint16_t p :1;
+            uint16_t c :4;
+            uint16_t r :4;
+            uint16_t h :1;
+        };
+        uint16_t data;
     };
     
 
+    union InternalVramRegister
+    {
+        struct
+        {
+            uint16_t coarseX :5;
+            uint16_t coarseY :5;
+            uint16_t ntX :1;
+            uint16_t ntY :1;
+            uint16_t fineY :3;
+        };
+        uint16_t data;
+    };
+
     void ppuWrite(uint16_t address, uint8_t data);
-    uint8_t ppuRead(uint16_t address);
 
-    std::array<uint8_t, 8> _registers;
-    std::array<PatternSection, 2> _patternTable;
+    uint8_t ppuRead(uint16_t address, bool active = true);
 
-    // Using a default palette i took from the nesdev wiki
-    PaletteTable _paletteTable = {{{84,84,84},{0,30,116},{8,16,144},{48,0,136},{68,0,100},{92,0,48},{84,4,0},{60,24,0},{32,42,0},{8,58,0},{0,64,0},{0,60,0},{0,50,60},{0,0,0},
-        {152,150,152},{8,76,196},{48,50,236},{92,30,228},{136,20,176},{160,20,100},{152,34,32},{120,60,0},{84,90,0},{40,114,0},{8,124,0},{0,118,40},{0,102,120},{0,0,0},
-        {236,238,236},{76,154,236},{120,124,236},{176,98,236},{228,84,236},{236,88,180},{236,106,100},{212,136,32},{160,170,0},{116,196,0},{76,208,32},{56,204,108},{56,180,204},{60,60,60},
-        {236,238,236},{168,204,236},{188,188,236},{212,178,236},{236,174,236},{236,174,212},{236,180,176},{228,196,144},{204,210,120},{180,222,120},{168,226,144},{152,226,180},{160,214,228},{160,162,160}}};
+    uint32_t getRgbForPixel(uint8_t paletteId, uint8_t pixelValue);
+
+    void progressNt();
+
+    void fetchNextTile();
+    void fetchNextTileAttribute();
+    void fetchPatternForTile(bool isLow);
+    void updateShiftRegisters();
+    void progressX();
+    void progressY();
+    void activeCycleSwitch();
+    void renderPixelsToScreen();
+
+    // registers
+    union
+    {
+        struct
+        {
+            uint8_t ntX : 1;
+            uint8_t ntY : 1;
+            uint8_t vramInc : 1;
+            uint8_t sptAddr : 1;
+            uint8_t bptAddr : 1;
+            uint8_t spriteSize : 1;
+            uint8_t masterSlave : 1;
+            uint8_t genNmi : 1;
+        };
+        uint8_t data;
+    } _ctrl;
+
+    union
+    {
+        struct
+        {
+            uint8_t gScale : 1;
+            uint8_t shBackgroundL8 : 1;
+            uint8_t shSpriteL8 : 1;
+            uint8_t shBackground : 1;
+            uint8_t shSprite : 1;
+            uint8_t empRed : 1;
+            uint8_t empGreen : 1;
+            uint8_t empBlue : 1;
+        };
+        uint8_t data;
+    } _mask;
+
+    union
+    {
+        struct
+        {
+            uint8_t openBus : 5;
+            uint8_t spriteOverflow : 1;
+            uint8_t spriteHit0 : 1;
+            uint8_t verticalBank : 1;
+        };
+        uint8_t data;
+    } _status;
+
+    uint8_t _readBuffer;
+    InternalVramRegister _v;
+    InternalVramRegister _t;
+    uint8_t _fineX;
+    bool _w;
+    bool _immediateRead;
+
+    int16_t _cycle;
+    int16_t _scanLine;
+    bool _nmi;
+    bool _oddFrame;
+
+    PatternTable _patternTable;
+    PaletteTable _paletteTable;
+    std::array<NameTable, 2> _internalNameTableMem;
+
+    WorkPaletteSet _workPaletteSet;
+
     WriteFunction _busWrite;
     ReadFunction _busRead;
+
+    bool _ignoreCtrlFlagW;
+    uint8_t _mirroringMode;
+
+    uint8_t _ntByte;
+    uint8_t _atByte;
+    uint8_t _loBgTileByte;
+    uint8_t _hiBgTileByte;
+
+    uint16_t _loPtShift;
+    uint16_t _hiPtShift;
+    uint16_t _loAtShift;
+    uint16_t _hiAtShift;
+
+    std::array<uint32_t, 0xf000> _screen;
 };

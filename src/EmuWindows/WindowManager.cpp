@@ -44,6 +44,11 @@ void WindowManager::EmuWindowManagerEventLoop()
             break;
         case SDL_WINDOWEVENT:
             EventMapperHelper(e.window.windowID, e);
+            if (e.window.event == SDL_WINDOWEVENT_CLOSE)
+            {
+                _windowMapper.clear();
+                flag = false;
+            }
             break;
         default:
             break;

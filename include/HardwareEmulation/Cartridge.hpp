@@ -9,9 +9,16 @@ class Cartridge {
 public:
     Cartridge(std::fstream cartridge_file);
 
-    void CpuWrite(uint16_t address, uint8_t data);
+    bool cpuWrite(uint16_t address, uint8_t data);
 
-    uint8_t CpuRead(uint16_t address);
+    bool cpuRead(uint16_t address, uint8_t& data);
+
+    bool ppuWrite(uint16_t address, uint8_t data);
+
+    bool ppuRead(uint16_t address, uint8_t& data);
+
+    uint8_t getMirroringMode();
+
 private:
     struct CartridgeHeader
     {
@@ -27,5 +34,5 @@ private:
     };
 
     std::shared_ptr<Mapper> _mapper;
-    CartridgeHeader _cartridge_header;
+    CartridgeHeader _cartridgeHeader;
 };

@@ -116,31 +116,31 @@ Cpu::Cpu(WriteFunction mmu_write, ReadFunction mmu_read) :
 
 void Cpu::cpuExecuteInstruction()
 {
+    #ifdef NESTEST_DEBUG
     static uint32_t index = 0;
-    
+    #endif // NESTEST_DEBUG
     uint8_t opcode = cpuRead(_pc++);
-
+    
     #ifdef NESTEST_DEBUG
     NestestLogTester::GetInstance()->DebugInstruction(*this, opcode, index);
+    index++;
     #endif // NESTEST_DEBUG
     _instructionTypeMapper[_opcodeVector[opcode].type](_opcodeVector[opcode].addrMode);
-    index++;
 }
 
 void Cpu::cpuReset()
 {
+    #ifdef NESTEST_DEBUG
+    //_pc = 0xc000;
+    _pc = cpuRead(_irqVectorMap[IrqType::RESET].first) | (cpuRead(_irqVectorMap[IrqType::RESET].second) << 8);
+    #else
+    _pc = cpuRead(_irqVectorMap[IrqType::RESET].first) | (cpuRead(_irqVectorMap[IrqType::RESET].second) << 8);
+    #endif // NESTEST_DEBUG
     _a = 0;
     _x = 0;
     _y = 0;
     _p = INTERRUPT_DISABLE_FLAG_MASK;
     _sp = 0xfd; // this is done to simulate the hacked stack insertions
-
-    #ifdef NESTEST_DEBUG
-    _pc = 0xc000;
-    #else
-    _pc = cpuRead(_irqVectorMap[IrqType::RESET].first) | (cpuRead(_irqVectorMap[IrqType::RESET].second) << 8);
-    #endif // NESTEST_DEBUG
-
     _cycles = 7;
 }
 

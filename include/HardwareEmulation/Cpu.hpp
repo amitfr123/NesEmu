@@ -17,6 +17,9 @@ public:
 
     void cpuExecuteInstruction();
 
+    void Irq();
+    void Nmi();
+
     std::map<uint16_t, std::string> disassemble();
 private:
     #ifdef NESTEST_DEBUG
@@ -334,7 +337,4 @@ private:
     void Txa(AMode addrMode);
     void Txs(AMode addrMode);
     void Tya(AMode addrMode);
-
-    void Irq();
-    void Nmi();
 };
