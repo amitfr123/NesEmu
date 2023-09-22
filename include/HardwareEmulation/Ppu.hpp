@@ -73,6 +73,7 @@ private:
             uint16_t c :4;
             uint16_t r :4;
             uint16_t h :1;
+            uint16_t unused :3;
         };
         uint16_t data;
     };
@@ -87,6 +88,7 @@ private:
             uint16_t ntX :1;
             uint16_t ntY :1;
             uint16_t fineY :3;
+            uint16_t unused :1;
         };
         uint16_t data;
     };

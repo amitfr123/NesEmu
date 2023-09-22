@@ -111,8 +111,6 @@ void Ppu::writeToRegister(uint16_t address, uint8_t data)
     case PPU_CTRL_OFFSET:
         if (!_ignoreCtrlFlagW)
         {
-            uint8_t prv = _ctrl.data;
-            
             _ctrl.data = data;
             _t.ntX = _ctrl.ntX;
             _t.ntY = _ctrl.ntY;
@@ -166,12 +164,12 @@ void Ppu::writeToRegister(uint16_t address, uint8_t data)
 
 uint8_t Ppu::readFromRegister(uint16_t address)
 {
-    uint8_t data = 0;
+    uint8_t data = _readBuffer;
     address &= 0xf;
     switch (address)
     {
     case PPU_STATUS_OFFSET:
-        data = _status.data;
+        data = _status.data & 0xE0;
         data |= _readBuffer & 0x1f;
         _w = 0;
         _status.verticalBank = 0;
@@ -198,6 +196,7 @@ uint8_t Ppu::readFromRegister(uint16_t address)
 
 void Ppu::ppuWrite(uint16_t address, uint8_t data)
 {
+    address &= 0x3FFF;
     if (_busWrite(address, data))
     {
         // overriden by the bus
@@ -205,7 +204,7 @@ void Ppu::ppuWrite(uint16_t address, uint8_t data)
     else if (address >= PPU_PATTERN_ADDR_START && address <= PPU_PATTERN_ADDR_END)
     {
         PatternTableAddr addr(address);
-        _patternTable[addr.h][((addr.r << 4) | (addr.c))][addr.p][addr.t] = data;
+        _patternTable[addr.h][addr.r * 16 + addr.c][addr.p][addr.t] = data;
     }
     else if (address >= PPU_NAME_TABLE_ADDR_START && address <= PPU_NAME_TABLE_ADDR_M_END)
     {
@@ -234,6 +233,7 @@ void Ppu::ppuWrite(uint16_t address, uint8_t data)
 uint8_t Ppu::ppuRead(uint16_t address, bool active)
 {
     uint8_t data = 0;
+    address &= 0x3fff;
     if (_busRead(address, data))
     {
         // overriden by the bus
@@ -241,7 +241,7 @@ uint8_t Ppu::ppuRead(uint16_t address, bool active)
     else if (address >= PPU_PATTERN_ADDR_START && address <= PPU_PATTERN_ADDR_END)
     {
         PatternTableAddr addr(address);
-        data = _patternTable[addr.h][((addr.r << 4) | (addr.c))][addr.p][addr.t];
+        data = _patternTable[addr.h][addr.r * 16 + addr.c][addr.p][addr.t];
     }
     else if (address >= PPU_NAME_TABLE_ADDR_START && address <= PPU_NAME_TABLE_ADDR_M_END)
     {
@@ -258,7 +258,7 @@ uint8_t Ppu::ppuRead(uint16_t address, bool active)
     }
     else if (address >= PPU_PALETTE_ADDR_START && address <= PPU_PALETTE_ADDR_END)
     {
-        address = address % _workPaletteSet.size(); // mirroring 
+        address &= 0x001F;
         if (address % 4 == 0)
         {
             address &= 0xf; // internal mirroring for 3f10 3f14 3f18 3f1c

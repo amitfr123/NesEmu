@@ -56,7 +56,8 @@ uint8_t Bus::cpuRead(uint16_t address)
 void Bus::insertCartridge(std::fstream file)
 {
     _cartridge = std::make_shared<Cartridge>(std::move(file));
-    _ppu.setMirroringMode(_cartridge->getMirroringMode());
+    //_ppu.setMirroringMode(_cartridge->getMirroringMode());
+    _ppu.ConnectCartridge(_cartridge);
 }
 
 void Bus::removeCartridge()

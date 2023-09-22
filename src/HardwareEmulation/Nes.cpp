@@ -15,10 +15,10 @@ Nes::Nes() :
 {
     _wm.AddNewWindow(std::make_shared<FileLoadingWindow>(std::bind(&Nes::InsertNewCartridge, this ,std::placeholders::_1)));
     _wm.AddNewWindow(std::make_shared<MemoryWindow>(_bus.getRamView()));
-    _wm.AddNewWindow(std::make_shared<PaletteWindow>(_bus._ppu.getPalette(), std::bind(&Ppu::getWorkPaletteRgb, &(_bus._ppu),std::placeholders::_1)));
+    //_wm.AddNewWindow(std::make_shared<PaletteWindow>(_bus._ppu.getPalette(), std::bind(&Ppu::getWorkPaletteRgb, &(_bus._ppu),std::placeholders::_1)));
     _screen = std::make_shared<ScreenWindow>(_bus._ppu.getScreen());
     _wm.AddNewWindow(_screen);
-    _wm.AddNewWindow(std::make_shared<PatternWindow>(std::bind(&Ppu::getPatternTable, &(_bus._ppu),std::placeholders::_1)));
+    //_wm.AddNewWindow(std::make_shared<PatternWindow>(std::bind(&Ppu::getPatternTable, &(_bus._ppu),std::placeholders::_1)));
     _runMasterClock = false;
 }
 
@@ -44,15 +44,14 @@ void Nes::StartNesEmulation()
     {
         if (_runMasterClock)
         {
-            _bus._ppu.executeCycle();
+            _bus._ppu.clock();
             if (clc % 3 == 0)
             {
                 _bus._cpu.cpuExecuteInstruction();
             }
-            if (_bus._ppu.getNmiStatus())
+            if (_bus._ppu.nmi)
             {
-                _screen->readNewFrame();
-                _bus._ppu.clearNmiStatus();
+                _bus._ppu.nmi = false;
                 _bus._cpu.Nmi();
             }
             clc++;
